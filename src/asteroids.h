@@ -20,14 +20,16 @@ struct Asteroid {
 
   Asteroid(bool active, Vector2 position, AsteroidSize asteroidSize,
            float rotationAngle, float rotationSpeed, Vector2 velocity)
-      : active(active), position(position), rotationAngle(rotationAngle),
-        rotationSpeed(rotationSpeed), velocity(velocity) {}
+      : active(active), position(position), asteroidSize(asteroidSize),
+        rotationAngle(rotationAngle), rotationSpeed(rotationSpeed),
+        velocity(velocity) {}
 };
 
 const float AST_ROT_SPEED_MIN = 5.0f;
 const float AST_ROT_SPEED_MAX = 240.0f;
 
-Asteroid CreateAsteroid(const Vector2 &position, const AsteroidSize &size,
-                        const Vector2 &velocity);
+Asteroid CreateAsteroid(Vector2 position, AsteroidSize size, Vector2 velocity);
 
-void UpdateAsteroid(Asteroid &asteroid, float frametime);
+void UpdateAsteroid(Asteroid &asteroid, float &frametime);
+void DrawAsteroid(Asteroid &asteroid);
+void AddAsteroid(Vector2 position, AsteroidSize size);

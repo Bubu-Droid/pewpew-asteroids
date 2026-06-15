@@ -1,10 +1,10 @@
 #include "asteroids.h"
 #include "raylib.h"
+#include "raymath.h"
 #include <memory>
 #include <random>
 
-Asteroid CreateAsteroid(const Vector2 &position, const AsteroidSize &size,
-                        const Vector2 &velocity) {
+Asteroid CreateAsteroid(Vector2 position, AsteroidSize size, Vector2 velocity) {
   std::random_device rd;
   std::mt19937 gen(rd());
 
@@ -18,10 +18,12 @@ Asteroid CreateAsteroid(const Vector2 &position, const AsteroidSize &size,
   return *Ast;
 }
 
-void UpdateAsteroid(Asteroid &asteroid, float frametime) {
-  asteroid.position =
-      Vector2(asteroid.position.x + asteroid.velocity.x * frametime,
-              asteroid.position.y + asteroid.position.y * frametime);
+void UpdateAsteroid(Asteroid &asteroid, float &frametime) {
+  if (!asteroid.active) {
+    return;
+  }
 
+  asteroid.position =
+      Vector2Add(asteroid.position, Vector2Scale(asteroid.velocity, frametime));
   asteroid.rotationAngle += asteroid.rotationSpeed * frametime;
 }
