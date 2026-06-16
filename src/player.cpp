@@ -1,4 +1,5 @@
 #include "player.h"
+#include "raylib.h"
 #include "raymath.h"
 #include <print>
 
@@ -50,8 +51,12 @@ void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime) {
   player.facingDirection = Vector2Subtract(mousePos, player.position);
 }
 
-void DrawPlayer(Player &player) {
+void DrawPlayer(Player &player, Texture2D playerTexture) {
   float rotation =
-      90 - Vector2Angle(player.facingDirection, Vector2(0, 1)) * RAD2DEG;
-  DrawPoly(player.position, 3, 16, rotation, WHITE);
+      180 - Vector2Angle(player.facingDirection, Vector2(0, 1)) * RAD2DEG;
+  // DrawPoly(player.position, 3, 16, rotation, WHITE);
+  Rectangle source = {0, 0, 32, 32};
+  Rectangle dest = {player.position.x, player.position.y, 48, 48};
+  Vector2 origin = {dest.width / 2, dest.height / 2};
+  DrawTexturePro(playerTexture, source, dest, origin, rotation, WHITE);
 }

@@ -35,11 +35,14 @@ std::array<Vector2, 2> line1;
 #endif
 
 static void UpdateDrawFrame(Player &player);
+static Texture2D playerTexture;
 
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Asteroids");
 
   std::unique_ptr<Player> player = std::make_unique<Player>();
+  playerTexture =
+      LoadTexture("/home/bubu/Desktop/asteroids/resources/textures/ship.png");
 
   while (!WindowShouldClose()) {
     UpdateDrawFrame(*player);
@@ -95,7 +98,7 @@ static void UpdateDrawFrame(Player &player) {
   }
 #endif
 #if PLAYER_ON == 1
-  DrawPlayer(player);
+  DrawPlayer(player, playerTexture);
 
   if (showPlayerStats) {
     float playerSpeed = Vector2Length(player.velocity);

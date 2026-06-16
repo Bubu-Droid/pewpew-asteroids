@@ -25,4 +25,4 @@ struct Player {
 };
 
 void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime);
-void DrawPlayer(Player &player);
+void DrawPlayer(Player &player, Texture2D playerTexture);
