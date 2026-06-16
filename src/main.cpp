@@ -1,10 +1,8 @@
 #include "asteroids.h"
 #include "constants.h"
-#include "raymath.h"
+
 #include <array>
-#include <cmath>
 #include <format>
-// #include <print>
 #include <random>
 
 std::random_device rd;
@@ -17,20 +15,23 @@ std::uniform_real_distribution<float> randRotationSpeed(AST_ROT_SPEED_MIN,
                                                         AST_ROT_SPEED_MAX);
 std::uniform_real_distribution<float> randAngleNoise(-ASTEROID_RANDOM_ANGLE,
                                                      ASTEROID_RANDOM_ANGLE);
-std::array<Asteroid, MAX_ASTEROIDS> asteroids{};
-
-float lastAstCreationTime = -1.0f;
 
 const std::array<AsteroidSize, 3> AST_SIZE_ARR = {
     ASTEROID_SMALL, ASTEROID_MEDIUM, ASTEROID_LARGE};
+std::array<Asteroid, MAX_ASTEROIDS> asteroids{};
+float lastAstCreationTime = -1.0f;
 
-Vector2 line0[2];
-Vector2 line1[2];
+std::array<Vector2, 2> line0;
+std::array<Vector2, 2> line1;
 
-void UpdateDrawFrame();
-Vector2 GetNextAsteroidPosition();
-void AddAsteroid(Vector2 position, AsteroidSize size);
+static void UpdateDrawFrame();
 void DrawAsteroid(Asteroid &asteroid);
+Vector2 GetNextAsteroidPosition(int astDir);
+void AddAsteroid(std::array<Asteroid, MAX_ASTEROIDS> &asteroids,
+                 Vector2 position, AsteroidSize size, int randVelocity,
+                 float randAngleNoise, int randDirection,
+                 float randRotationSpeed, std::array<Vector2, 2> &line0,
+                 std::array<Vector2, 2> &line1);
 
 int main() {
   InitWindow(screenWidth, screenHeight, "Raylib Asteroids");
@@ -42,8 +43,7 @@ int main() {
   CloseWindow();
 }
 
-void UpdateDrawFrame() {
-
+static void UpdateDrawFrame() {
   float frametime = GetFrameTime();
   float time = GetTime();
 
@@ -52,7 +52,10 @@ void UpdateDrawFrame() {
   }
 
   if (time > lastAstCreationTime + AST_CREATION_DELAY) {
-    AddAsteroid(GetNextAsteroidPosition(), AST_SIZE_ARR[randIndexChoice(gen)]);
+    AddAsteroid(asteroids, GetNextAsteroidPosition(randDirection(gen)),
+                AST_SIZE_ARR[randIndexChoice(gen)], randVelocity(gen),
+                randAngleNoise(gen), randDirection(gen), randRotationSpeed(gen),
+                line0, line1);
     lastAstCreationTime = time;
   }
 
@@ -80,59 +83,4 @@ void UpdateDrawFrame() {
   }
 
   EndDrawing();
-}
-
-void DrawAsteroid(Asteroid &asteroid) {
-  if (asteroid.active) {
-    DrawPolyLines(asteroid.position, 3, 16 * asteroid.asteroidSize,
-                  asteroid.rotationAngle, WHITE);
-  }
-}
-
-void AddAsteroid(Vector2 position, AsteroidSize size) {
-  bool created = false;
-
-  for (auto &asteroid : asteroids) {
-    if (asteroid.active) {
-      continue;
-    }
-
-    Vector2 velocity = Vector2Subtract(screenCenter, position);
-    Vector2 normVelocity = Vector2Normalize(velocity);
-    velocity = Vector2Scale(normVelocity, randVelocity(gen));
-
-    if (showCone) {
-      line0[0] = position;
-      line1[0] = position;
-
-      line0[1] =
-          Vector2Add(position, Vector2Rotate(Vector2Scale(normVelocity, 1000),
-                                             -ASTEROID_RANDOM_ANGLE));
-      line1[1] =
-          Vector2Add(position, Vector2Rotate(Vector2Scale(normVelocity, 1000),
-                                             ASTEROID_RANDOM_ANGLE));
-    }
-
-    velocity = Vector2Rotate(velocity, randAngleNoise(gen));
-
-    asteroid = CreateAsteroid(position, velocity, size, randDirection(gen),
-                              randRotationSpeed(gen));
-    created = true;
-    break;
-  }
-
-  if (!created) {
-    TraceLog(LOG_ERROR, "Failed to create an asteroid because there was no "
-                        "inactive spots in the array!");
-  }
-}
-
-Vector2 GetNextAsteroidPosition() {
-  int astDir = randDirection(gen);
-  float screenRadius = std::sqrt(std::pow((screenHeight / 2.0f), 2) +
-                                 std::pow((screenWidth / 2.0f), 2));
-  Vector2 newAstPos = Vector2Rotate(Vector2(1, 0), astDir);
-  newAstPos = Vector2Scale(newAstPos, (screenRadius + AST_SPAWN_PADDING));
-  newAstPos = Vector2Add(newAstPos, screenCenter);
-  return newAstPos;
 }

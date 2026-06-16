@@ -13,6 +13,7 @@ set(deps_dir "${PROJECT_SOURCE_DIR}/deps")
 add_executable (asteroids
   "${source_dir}/main.cpp"
   "${source_dir}/asteroids.cpp"
+  "${source_dir}/player.cpp"
 )
 
 target_include_directories(asteroids PRIVATE
