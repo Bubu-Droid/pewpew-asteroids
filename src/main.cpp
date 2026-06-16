@@ -1,10 +1,18 @@
-#include "asteroids.h"
-#include "constants.h"
+#define ASTEROIDS_ON 1
+#define PLAYER_ON 1
 
 #include <array>
 #include <format>
+#include <memory>
 #include <random>
 
+#include "asteroids.h"
+#include "constants.h"
+#include "player.h"
+#include "raylib.h"
+#include "raymath.h"
+
+#if ASTEROIDS_ON == 1
 std::random_device rd;
 std::mt19937 gen(rd());
 
@@ -24,29 +32,28 @@ float lastAstCreationTime = -1.0f;
 std::array<Vector2, 2> line0;
 std::array<Vector2, 2> line1;
 
-static void UpdateDrawFrame();
-void DrawAsteroid(Asteroid &asteroid);
-Vector2 GetNextAsteroidPosition(int astDir);
-void AddAsteroid(std::array<Asteroid, MAX_ASTEROIDS> &asteroids,
-                 Vector2 position, AsteroidSize size, int randVelocity,
-                 float randAngleNoise, int randDirection,
-                 float randRotationSpeed, std::array<Vector2, 2> &line0,
-                 std::array<Vector2, 2> &line1);
+#endif
+
+static void UpdateDrawFrame(Player &player);
 
 int main() {
-  InitWindow(screenWidth, screenHeight, "Raylib Asteroids");
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Asteroids");
+
+  std::unique_ptr<Player> player = std::make_unique<Player>();
 
   while (!WindowShouldClose()) {
-    UpdateDrawFrame();
+    UpdateDrawFrame(*player);
   }
 
   CloseWindow();
 }
 
-static void UpdateDrawFrame() {
+static void UpdateDrawFrame(Player &player) {
   float frametime = GetFrameTime();
   float time = GetTime();
+  Vector2 mousePos = GetMousePosition();
 
+#if ASTEROIDS_ON == 1
   for (auto &asteroid : asteroids) {
     UpdateAsteroid(asteroid, frametime, time);
   }
@@ -58,10 +65,15 @@ static void UpdateDrawFrame() {
                 line0, line1);
     lastAstCreationTime = time;
   }
+#endif
+#if PLAYER_ON == 1
+  UpdatePlayer(player, mousePos, frametime);
+#endif
 
   BeginDrawing();
   ClearBackground(NEARBLACK);
 
+#if ASTEROIDS_ON == 1
   for (auto &asteroid : asteroids) {
     DrawAsteroid(asteroid);
   }
@@ -78,9 +90,29 @@ static void UpdateDrawFrame() {
         count++;
       }
     }
-    DrawRectangle(10, 10, 100, 52, Fade(BLACK, 0.0f));
+    DrawRectangle(10, 10, 260, 52, Fade(BLACK, 0.6f));
     DrawText(std::format("ASTEROIDS: {}", count).c_str(), 20, 20, 32, WHITE);
   }
+#endif
+#if PLAYER_ON == 1
+  DrawPlayer(player);
+
+  if (showPlayerStats) {
+    float playerSpeed = Vector2Length(player.velocity);
+    float playerDir =
+        90 - Vector2Angle(player.facingDirection, Vector2(0, 1)) * RAD2DEG;
+    Vector2 playerPos = player.position;
+
+    DrawRectangle(10, SCREEN_HEIGHT - 90, 350, 80, Fade(BLACK, 0.6f));
+    DrawText(std::format("Speed: {}", playerSpeed).c_str(), 20,
+             SCREEN_HEIGHT - 85, 20, WHITE);
+    DrawText(std::format("Direction: {}", playerDir).c_str(), 20,
+             SCREEN_HEIGHT - 60, 20, WHITE);
+    DrawText(
+        std::format("Position: ({}, {})", playerPos.x, playerPos.y).c_str(), 20,
+        SCREEN_HEIGHT - 35, 20, WHITE);
+  }
+#endif
 
   EndDrawing();
 }

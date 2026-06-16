@@ -33,11 +33,11 @@ void DrawAsteroid(Asteroid &asteroid) {
 }
 
 Vector2 GetNextAsteroidPosition(int astDir) {
-  float screenRadius = std::sqrt(std::pow((screenHeight / 2.0f), 2) +
-                                 std::pow((screenWidth / 2.0f), 2));
+  float screenRadius = std::sqrt(std::pow((SCREEN_HEIGHT / 2.0f), 2) +
+                                 std::pow((SCREEN_WIDTH / 2.0f), 2));
   Vector2 newAstPos = Vector2Rotate(Vector2(1, 0), astDir);
   newAstPos = Vector2Scale(newAstPos, (screenRadius + AST_SPAWN_PADDING));
-  newAstPos = Vector2Add(newAstPos, screenCenter);
+  newAstPos = Vector2Add(newAstPos, SCREEN_CENTER);
   return newAstPos;
 }
 
@@ -53,7 +53,7 @@ void AddAsteroid(std::array<Asteroid, MAX_ASTEROIDS> &asteroids,
       continue;
     }
 
-    Vector2 velocity = Vector2Subtract(screenCenter, position);
+    Vector2 velocity = Vector2Subtract(SCREEN_CENTER, position);
     Vector2 normVelocity = Vector2Normalize(velocity);
     velocity = Vector2Scale(normVelocity, randVelocity);
 
