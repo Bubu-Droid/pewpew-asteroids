@@ -2,6 +2,7 @@
 
 #include "constants.h"
 #include "raylib.h"
+#include <cmath>
 
 static const float PLAYER_MAX_SPEED = 600.0f;
 static const float PLAYER_MASS = 200.0f;

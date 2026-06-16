@@ -1,14 +1,18 @@
+#include <cmath>
 #define ASTEROIDS_ON 1
 #define PLAYER_ON 1
+#define PROJECTILE_ON 1
 
 #include <array>
 #include <format>
 #include <memory>
+#include <print>
 #include <random>
 
 #include "asteroids.h"
 #include "constants.h"
 #include "player.h"
+#include "projectile.h"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -31,7 +35,11 @@ float lastAstCreationTime = -1.0f;
 
 std::array<Vector2, 2> line0;
 std::array<Vector2, 2> line1;
+#endif
 
+#if PROJECTILE_ON == 1
+std::array<Projectile, MAX_PROJECTILE> projectiles{};
+float lastProjCreationTime = -1.0f;
 #endif
 
 static void UpdateDrawFrame(Player &player);
@@ -40,7 +48,7 @@ static Texture2D playerTexture;
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Asteroids");
 
-  std::unique_ptr<Player> player = std::make_unique<Player>();
+  static std::unique_ptr<Player> player = std::make_unique<Player>();
   playerTexture =
       LoadTexture("/home/bubu/Desktop/asteroids/resources/textures/ship.png");
 
@@ -56,6 +64,23 @@ static void UpdateDrawFrame(Player &player) {
   float time = GetTime();
   Vector2 mousePos = GetMousePosition();
 
+  for (auto &asteroid : asteroids) {
+    if (asteroid.active) {
+      float asteroidRadius = 16 * asteroid.asteroidSize;
+      for (auto &projectile : projectiles) {
+        if (projectile.active) {
+          float projRadius =
+              std::sqrt(std::pow(PROJ_THICKNESS, 2) + std::pow(PROJ_LENGTH, 2));
+          if (CheckCollisionCircles(projectile.position, projRadius,
+                                    asteroid.position, asteroidRadius)) {
+            asteroid.active = false;
+            projectile.active = false;
+          }
+        }
+      }
+    }
+  }
+
 #if ASTEROIDS_ON == 1
   for (auto &asteroid : asteroids) {
     UpdateAsteroid(asteroid, frametime, time);
@@ -67,6 +92,33 @@ static void UpdateDrawFrame(Player &player) {
                 randAngleNoise(gen), randDirection(gen), randRotationSpeed(gen),
                 line0, line1);
     lastAstCreationTime = time;
+  }
+#endif
+#if PROJECTILE_ON == 1
+  for (auto &projectile : projectiles) {
+    UpdateProjectile(projectile, frametime, time);
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) &&
+        time > lastProjCreationTime + PROJ_CREATION_DELAY) {
+      float rotation = -Vector2Angle(player.facingDirection, Vector2(1, 0));
+      AddProjectile(projectiles, player.position, rotation);
+      lastProjCreationTime = time;
+    }
+  }
+
+  if (showAmmo) {
+
+    int ammoCount = 0;
+
+    for (auto &projectile : projectiles) {
+      if (projectile.active) {
+        ammoCount++;
+      }
+    }
+
+    DrawRectangle(8, 10, 107, 37, Fade(BLACK, 0.6f));
+    DrawText(std::format("AMMO: {}", MAX_PROJECTILE - ammoCount).c_str(), 20,
+             20, 20, WHITE);
   }
 #endif
 #if PLAYER_ON == 1
@@ -81,38 +133,44 @@ static void UpdateDrawFrame(Player &player) {
     DrawAsteroid(asteroid);
   }
 
-  if (showCone) {
+  if (showCone && debug) {
     DrawLineV(line0[0], line0[1], RED);
     DrawLineV(line1[0], line1[1], BLUE);
   }
 
-  int count = 0;
-  if (showAstCount) {
+  int astCount = 0;
+  if (showAstCount && debug) {
     for (auto &asteroid : asteroids) {
       if (asteroid.active) {
-        count++;
+        astCount++;
       }
     }
-    DrawRectangle(10, 10, 260, 52, Fade(BLACK, 0.6f));
-    DrawText(std::format("ASTEROIDS: {}", count).c_str(), 20, 20, 32, WHITE);
+    DrawRectangle(SCREEN_WIDTH - 180, 10, 170, 37, Fade(BLACK, 0.6f));
+    DrawText(std::format("ASTEROIDS: {}", astCount).c_str(), SCREEN_WIDTH - 170,
+             20, 20, WHITE);
+  }
+#endif
+#if PROJECTILE_ON == 1
+  for (auto &projectile : projectiles) {
+    DrawProjectile(projectile);
   }
 #endif
 #if PLAYER_ON == 1
   DrawPlayer(player, playerTexture);
 
-  if (showPlayerStats) {
+  if (showPlayerStats && debug) {
     float playerSpeed = Vector2Length(player.velocity);
     float playerDir =
         90 - Vector2Angle(player.facingDirection, Vector2(0, 1)) * RAD2DEG;
     Vector2 playerPos = player.position;
 
-    DrawRectangle(10, SCREEN_HEIGHT - 90, 350, 80, Fade(BLACK, 0.6f));
-    DrawText(std::format("Speed: {}", playerSpeed).c_str(), 20,
+    DrawRectangle(10, SCREEN_HEIGHT - 90, 360, 80, Fade(BLACK, 0.6f));
+    DrawText(std::format("SPEED: {}", playerSpeed).c_str(), 20,
              SCREEN_HEIGHT - 85, 20, WHITE);
-    DrawText(std::format("Direction: {}", playerDir).c_str(), 20,
+    DrawText(std::format("DIRECTION: {}", playerDir).c_str(), 20,
              SCREEN_HEIGHT - 60, 20, WHITE);
     DrawText(
-        std::format("Position: ({}, {})", playerPos.x, playerPos.y).c_str(), 20,
+        std::format("POSITION: ({}, {})", playerPos.x, playerPos.y).c_str(), 20,
         SCREEN_HEIGHT - 35, 20, WHITE);
   }
 #endif

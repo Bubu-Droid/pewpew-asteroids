@@ -14,6 +14,7 @@ add_executable (asteroids
   "${source_dir}/main.cpp"
   "${source_dir}/asteroids.cpp"
   "${source_dir}/player.cpp"
+  "${source_dir}/projectile.cpp"
 )
 
 target_include_directories(asteroids PRIVATE

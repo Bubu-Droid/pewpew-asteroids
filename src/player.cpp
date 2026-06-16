@@ -1,7 +1,5 @@
 #include "player.h"
-#include "raylib.h"
 #include "raymath.h"
-#include <print>
 
 void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime) {
   int xIn = (int)IsKeyDown(KEY_D) - (int)IsKeyDown(KEY_A);

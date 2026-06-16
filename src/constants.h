@@ -9,7 +9,11 @@ static const int SCREEN_HEIGHT = 600;
 static const Vector2 SCREEN_CENTER = {SCREEN_WIDTH / 2.0f,
                                       SCREEN_HEIGHT / 2.0f};
 
-static bool showCone = true;
+static bool debug = true;
+
+static bool showCone = false;
 static bool showAstCount = true;
 
-static bool showPlayerStats = true;
+static bool showPlayerStats = false;
+
+static bool showAmmo = true;

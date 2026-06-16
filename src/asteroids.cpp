@@ -14,6 +14,7 @@ Asteroid CreateAsteroid(Vector2 position, Vector2 velocity, AsteroidSize size,
 void UpdateAsteroid(Asteroid &asteroid, float &frametime, float &time) {
   if (time > asteroid.creationTime + AST_LIFETIME) {
     asteroid.active = false;
+    return;
   }
 
   if (!asteroid.active) {
@@ -46,7 +47,6 @@ void AddAsteroid(std::array<Asteroid, MAX_ASTEROIDS> &asteroids,
                  float randAngleNoise, int randDirection,
                  float randRotationSpeed, std::array<Vector2, 2> &line0,
                  std::array<Vector2, 2> &line1) {
-  bool created = false;
 
   for (auto &asteroid : asteroids) {
     if (asteroid.active) {
@@ -73,12 +73,9 @@ void AddAsteroid(std::array<Asteroid, MAX_ASTEROIDS> &asteroids,
 
     asteroid = CreateAsteroid(position, velocity, size, randDirection,
                               randRotationSpeed);
-    created = true;
-    break;
+    return;
   }
 
-  if (!created) {
-    TraceLog(LOG_ERROR, "Failed to create an asteroid because there was no "
-                        "inactive spots in the array!");
-  }
+  TraceLog(LOG_ERROR, "Failed to create an asteroid because there was no "
+                      "inactive spot in the array!");
 }
