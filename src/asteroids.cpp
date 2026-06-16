@@ -1,24 +1,19 @@
 #include "asteroids.h"
-#include "raylib.h"
 #include "raymath.h"
 #include <memory>
-#include <random>
 
-Asteroid CreateAsteroid(Vector2 position, AsteroidSize size, Vector2 velocity) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-
-  std::uniform_real_distribution<float> randRotationAngle(0.0f, 360.0f);
-  std::uniform_real_distribution<float> randRotationSpeed(AST_ROT_SPEED_MIN,
-                                                          AST_ROT_SPEED_MAX);
-
-  std::unique_ptr<Asteroid> Ast =
-      std::make_unique<Asteroid>(true, position, size, randRotationAngle(gen),
-                                 randRotationSpeed(gen), velocity);
+Asteroid CreateAsteroid(Vector2 position, Vector2 velocity, AsteroidSize size,
+                        float rotationAngle, float rotationSpeed) {
+  std::unique_ptr<Asteroid> Ast = std::make_unique<Asteroid>(
+      true, position, velocity, size, rotationAngle, rotationSpeed);
   return *Ast;
 }
 
-void UpdateAsteroid(Asteroid &asteroid, float &frametime) {
+void UpdateAsteroid(Asteroid &asteroid, float &frametime, float &time) {
+  if (time > asteroid.creationTime + AST_LIFETIME) {
+    asteroid.active = false;
+  }
+
   if (!asteroid.active) {
     return;
   }
