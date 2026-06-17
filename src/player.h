@@ -1,8 +1,11 @@
 #pragma once
 
+#include <cmath>
+
 #include "constants.h"
 #include "raylib.h"
 
+static const float PLAYER_RADIUS = 16 * std::sqrt(2);
 static const float PLAYER_MAX_SPEED = 600.0f;
 static const float PLAYER_MASS = 200.0f;
 static const float PLAYER_ACCEL = 1200.0f;
@@ -20,9 +23,11 @@ struct Player {
   Vector2 velocity;
   Vector2 facingDirection;
 
-  Player()
-      : position(SCREEN_CENTER), velocity(0), facingDirection(Vector2(0, 1)) {}
+  Player() :
+      position(SCREEN_CENTER),
+      velocity(0),
+      facingDirection(Vector2(0, 1)) {}
 };
 
-void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime);
-void DrawPlayer(Player &player, Texture2D playerTexture);
+void UpdatePlayer(Player& player, Vector2& mousePos, float& frametime);
+void DrawPlayer(Player& player, Texture2D playerTexture);

@@ -1,7 +1,8 @@
 #include "player.h"
+
 #include "raymath.h"
 
-void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime) {
+void UpdatePlayer(Player& player, Vector2& mousePos, float& frametime) {
   int xIn = (int)IsKeyDown(KEY_D) - (int)IsKeyDown(KEY_A);
   int yIn = (int)IsKeyDown(KEY_S) - (int)IsKeyDown(KEY_W);
 
@@ -49,7 +50,7 @@ void UpdatePlayer(Player &player, Vector2 &mousePos, float &frametime) {
   player.facingDirection = Vector2Subtract(mousePos, player.position);
 }
 
-void DrawPlayer(Player &player, Texture2D playerTexture) {
+void DrawPlayer(Player& player, Texture2D playerTexture) {
   float rotation =
       180 - Vector2Angle(player.facingDirection, Vector2(0, 1)) * RAD2DEG;
   // DrawPoly(player.position, 3, 16, rotation, WHITE);
