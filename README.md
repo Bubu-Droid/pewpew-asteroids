@@ -42,6 +42,12 @@ project. You have explicit control over everything and decide how entities
 get created, occupy memory, and get destroyed. I finally saw a real world
 application of unique pointers.
 
+<sup><sub>\*Okay, okay, I know... This might not be optimized.
+Chill out bruv, I'm still learning about optimizations and
+memory allocation management. It seems that there was no use of
+the unique pointer. 😐
+</sub></sup>
+
 ---
 
 ### My Komments About LLMs and Building Application Designs
