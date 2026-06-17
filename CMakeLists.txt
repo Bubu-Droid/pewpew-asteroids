@@ -19,13 +19,15 @@ add_executable (asteroids
 )
 
 if(WIN32)
-target_link_libraries(asteroids PRIVATE raylib opengl32 gdi32 winmm)
-target_link_options(asteroids PRIVATE "-static" "-static-libgcc" "-static-libstdc++")
 target_include_directories(asteroids PRIVATE
   "${deps_dir}/raylib-windows/include"
 )
 target_link_directories(asteroids PRIVATE
   "${deps_dir}/raylib-windows/lib"
+)
+target_link_libraries(asteroids PRIVATE raylib opengl32 gdi32 winmm)
+target_link_options(asteroids PRIVATE
+  "-static" "-static-libgcc" "-static-libstdc++"
 )
 
 elseif(LINUX)
@@ -50,6 +52,7 @@ install(FILES
 )
 
 include(InstallRequiredSystemLibraries)
+set(CPACK_PACKAGE_NAME "asteroids")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_VERSION_MAJOR "0")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
