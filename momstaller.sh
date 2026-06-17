@@ -11,6 +11,7 @@ cd ./build || exit
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release
 cpack -G TGZ
+cp asteroids ../asteroids-linux
 cd ..
 
 echo "Building for Windows..."
@@ -22,4 +23,5 @@ cd ./windows-build || exit
 cmake -DCMAKE_TOOLCHAIN_FILE=../windows-toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release
 cpack -G NSIS
+cp asteroids.exe ../asteroids-windows.exe
 cd ..
