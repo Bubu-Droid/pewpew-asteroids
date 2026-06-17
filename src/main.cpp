@@ -146,7 +146,7 @@ static void UpdateEndFrame(Player& player) {
     duration = 0;
     std::fill(asteroids.begin(), asteroids.end(), Asteroid());
     std::fill(projectiles.begin(), projectiles.end(), Projectile());
-    player.position = SCREEN_CENTER;
+    player = *std::make_unique<Player>();
     startPoint = std::chrono::high_resolution_clock::now();
     start = std::chrono::time_point_cast<std::chrono::milliseconds>(startPoint)
                 .time_since_epoch()
