@@ -27,6 +27,10 @@ struct Player {
       position(SCREEN_CENTER),
       velocity(0),
       facingDirection(Vector2(0, 1)) {}
+
+  ~Player() {
+    TraceLog(LOG_INFO, "Player destroyed!");
+  }
 };
 
 void UpdatePlayer(Player& player, Vector2& mousePos, float& frametime);

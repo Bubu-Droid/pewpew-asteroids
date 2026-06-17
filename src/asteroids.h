@@ -51,6 +51,10 @@ struct Asteroid {
       rotationAngle(rotationAngle),
       rotationSpeed(rotationSpeed),
       creationTime(GetTime()) {}
+
+  ~Asteroid() {
+    TraceLog(LOG_INFO, "Asteroid destroyed!");
+  }
 };
 
 Asteroid CreateAsteroid(

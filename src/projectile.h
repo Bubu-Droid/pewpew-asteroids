@@ -30,6 +30,10 @@ struct Projectile {
       position(position),
       rotation(rotation),
       creationTime(GetTime()) {}
+
+  ~Projectile() {
+    TraceLog(LOG_INFO, "Projectile destroyed!");
+  }
 };
 
 Projectile CreateProjectile(Vector2& position, float& rotation);
