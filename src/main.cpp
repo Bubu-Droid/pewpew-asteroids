@@ -1,12 +1,15 @@
 #include <cmath>
+#include <string>
+#define PLAYER_SCORE_ON 1
 #define ASTEROIDS_ON 1
 #define PLAYER_ON 1
 #define PROJECTILE_ON 1
 
 #include <array>
+#include <chrono>
 #include <format>
 #include <memory>
-#include <print>
+// #include <print>
 #include <random>
 
 #include "asteroids.h"
@@ -43,7 +46,16 @@ float lastProjCreationTime = -1.0f;
 #endif
 
 static void UpdateDrawFrame(Player &player);
+static void UpdateEndFrame();
 static Texture2D playerTexture;
+
+static bool gameEnd = 0;
+
+static int playerScore = 0;
+static auto startPoint = std::chrono::high_resolution_clock::now();
+auto start = std::chrono::time_point_cast<std::chrono::milliseconds>(startPoint)
+                 .time_since_epoch()
+                 .count();
 
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Asteroids");
@@ -53,10 +65,18 @@ int main() {
       LoadTexture("/home/bubu/Desktop/asteroids/resources/textures/ship.png");
 
   while (!WindowShouldClose()) {
-    UpdateDrawFrame(*player);
+    if (!gameEnd) {
+      UpdateDrawFrame(*player);
+    } else {
+      UpdateEndFrame();
+    }
   }
 
   CloseWindow();
+}
+
+static void UpdateEndFrame() {
+  DrawRectangle(10, SCREEN_HEIGHT - 90, 360, 80, Fade(WHITE, 0.6f));
 }
 
 static void UpdateDrawFrame(Player &player) {
@@ -73,6 +93,13 @@ static void UpdateDrawFrame(Player &player) {
               std::sqrt(std::pow(PROJ_THICKNESS, 2) + std::pow(PROJ_LENGTH, 2));
           if (CheckCollisionCircles(projectile.position, projRadius,
                                     asteroid.position, asteroidRadius)) {
+            if (asteroid.asteroidSize == ASTEROID_LARGE) {
+              playerScore += 1;
+            } else if (asteroid.asteroidSize == ASTEROID_MEDIUM) {
+              playerScore += 2;
+            } else if (asteroid.asteroidSize == ASTEROID_SMALL) {
+              playerScore += 3;
+            }
             asteroid.active = false;
             projectile.active = false;
           }
@@ -121,6 +148,32 @@ static void UpdateDrawFrame(Player &player) {
              20, 20, WHITE);
   }
 #endif
+#if PLAYER_SCORE_ON == 1
+  auto endTimePoint = std::chrono::high_resolution_clock::now();
+  auto end =
+      std::chrono::time_point_cast<std::chrono::milliseconds>(endTimePoint)
+          .time_since_epoch()
+          .count();
+
+  int duration = static_cast<int>(end - start) * 0.001f;
+  int seconds = duration % 60;
+  int minutes = duration / 60;
+
+  DrawRectangle(SCREEN_WIDTH / 2 - 30, 10, 95, 37, Fade(BLACK, 0.6f));
+  DrawText(std::format("{} PTS", playerScore).c_str(), SCREEN_WIDTH / 2 - 20,
+           20, 20, WHITE);
+
+  std::string timeString;
+
+  if (seconds < 10) {
+    timeString = std::format("{}:0{}", minutes, seconds);
+  } else {
+    timeString = std::format("{}:{}", minutes, seconds);
+  }
+
+  DrawRectangle(SCREEN_WIDTH - 70, 10, 60, 37, Fade(BLACK, 0.6f));
+  DrawText(timeString.c_str(), SCREEN_WIDTH - 60, 20, 20, WHITE);
+#endif
 #if PLAYER_ON == 1
   UpdatePlayer(player, mousePos, frametime);
 #endif
@@ -145,9 +198,9 @@ static void UpdateDrawFrame(Player &player) {
         astCount++;
       }
     }
-    DrawRectangle(SCREEN_WIDTH - 180, 10, 170, 37, Fade(BLACK, 0.6f));
+    DrawRectangle(SCREEN_WIDTH - 180, 60, 170, 37, Fade(BLACK, 0.6f));
     DrawText(std::format("ASTEROIDS: {}", astCount).c_str(), SCREEN_WIDTH - 170,
-             20, 20, WHITE);
+             70, 20, WHITE);
   }
 #endif
 #if PROJECTILE_ON == 1

@@ -3,10 +3,8 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include <array>
 #include <cmath>
 #include <memory>
-#include <print>
 
 static const Rectangle SCREEN_RECT = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
