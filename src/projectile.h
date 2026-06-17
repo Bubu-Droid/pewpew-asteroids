@@ -1,10 +1,10 @@
 #pragma once
 
-#include "raylib.h"
-
 #include <array>
 
-#define PROJECTILE_COLOR CLITERAL(Color){245, 201, 207, 255}
+#include "raylib.h"
+
+#define PROJECTILE_COLOR CLITERAL(Color) {245, 201, 207, 255}
 
 const float PROJ_SPEED = 800.0f;
 const float PROJ_LIFETIME = 4.0f;
@@ -25,13 +25,18 @@ struct Projectile {
 
   Projectile() : active(false) {}
 
-  Projectile(bool active, Vector2 &position, float &rotation)
-      : active(active), position(position), rotation(rotation),
-        creationTime(GetTime()) {}
+  Projectile(bool active, Vector2& position, float& rotation) :
+      active(active),
+      position(position),
+      rotation(rotation),
+      creationTime(GetTime()) {}
 };
 
-Projectile CreateProjectile(Vector2 &position, float &rotation);
-void UpdateProjectile(Projectile &projectile, float &frametime, float &time);
-void DrawProjectile(Projectile &projectile);
-void AddProjectile(std::array<Projectile, MAX_PROJECTILE> &projectiles,
-                   Vector2 position, float rotation);
+Projectile CreateProjectile(Vector2& position, float& rotation);
+void UpdateProjectile(Projectile& projectile, float& frametime, float& time);
+void DrawProjectile(Projectile& projectile);
+void AddProjectile(
+    std::array<Projectile, MAX_PROJECTILE>& projectiles,
+    Vector2 position,
+    float rotation
+);
