@@ -8,16 +8,17 @@
 #include <chrono>
 #include <cmath>
 #include <format>
-#include <memory>
 #include <random>
 #include <string>
 
 #include "asteroids.h"
+#include "back_bytes.h"
 #include "constants.h"
 #include "player.h"
 #include "projectile.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "ship_bytes.h"
 
 #if ASTEROIDS_ON == 1
 std::random_device rd;
@@ -62,17 +63,24 @@ auto start = std::chrono::time_point_cast<std::chrono::milliseconds>(startPoint)
 int main() {
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Asteroids");
 
-  static std::unique_ptr<Player> player = std::make_unique<Player>();
+  Player player = Player();
 
-  backTexture = LoadTexture("../textures/back.png");
-  playerTexture = LoadTexture("../textures/ship.png");
+  Image backImg =
+      LoadImageFromMemory(".png", __textures_back_png, __textures_back_png_len);
+  backTexture = LoadTextureFromImage(backImg);
+  UnloadImage(backImg);
+
+  Image playerImg =
+      LoadImageFromMemory(".png", __textures_ship_png, __textures_ship_png_len);
+  playerTexture = LoadTextureFromImage(playerImg);
+  UnloadImage(playerImg);
 
   while (!WindowShouldClose()) {
     DrawTexture(backTexture, 0, 0, WHITE);
     if (!gameEnd) {
-      UpdateDrawFrame(*player);
+      UpdateDrawFrame(player);
     } else {
-      UpdateEndFrame(*player);
+      UpdateEndFrame(player);
     }
   }
 
@@ -146,7 +154,7 @@ static void UpdateEndFrame(Player& player) {
     duration = 0;
     std::fill(asteroids.begin(), asteroids.end(), Asteroid());
     std::fill(projectiles.begin(), projectiles.end(), Projectile());
-    player = *std::make_unique<Player>();
+    player = Player();
     startPoint = std::chrono::high_resolution_clock::now();
     start = std::chrono::time_point_cast<std::chrono::milliseconds>(startPoint)
                 .time_since_epoch()

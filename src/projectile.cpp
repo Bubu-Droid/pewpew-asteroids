@@ -1,7 +1,6 @@
 #include "projectile.h"
 
 #include <cmath>
-#include <memory>
 
 #include "constants.h"
 #include "raymath.h"
@@ -9,10 +8,9 @@
 static const Rectangle SCREEN_RECT = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 Projectile CreateProjectile(Vector2& position, float& rotation) {
-  std::unique_ptr<Projectile> projectile =
-      std::make_unique<Projectile>(true, position, rotation);
+  Projectile projectile = Projectile(true, position, rotation);
 
-  return *projectile;
+  return projectile;
 }
 
 void UpdateProjectile(Projectile& projectile, float& frametime, float& time) {

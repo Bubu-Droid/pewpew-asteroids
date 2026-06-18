@@ -1,7 +1,5 @@
 #include "asteroids.h"
 
-#include <memory>
-
 #include "constants.h"
 #include "raymath.h"
 
@@ -12,15 +10,9 @@ Asteroid CreateAsteroid(
     float rotationAngle,
     float rotationSpeed
 ) {
-  std::unique_ptr<Asteroid> Ast = std::make_unique<Asteroid>(
-      true,
-      position,
-      velocity,
-      size,
-      rotationAngle,
-      rotationSpeed
-  );
-  return *Ast;
+  Asteroid Ast =
+      Asteroid(true, position, velocity, size, rotationAngle, rotationSpeed);
+  return Ast;
 }
 
 void UpdateAsteroid(Asteroid& asteroid, float& frametime, float& time) {
