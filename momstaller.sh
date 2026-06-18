@@ -2,6 +2,9 @@
 
 # Mother of all installers :)
 
+# xxd -i ./textures/ship.png >./src/ship_bytes.h
+# xxd -i ./textures/back.png >./src/back_bytes.h
+
 echo "Building for Linux..."
 
 # Linux build
@@ -10,7 +13,7 @@ mkdir build
 cd ./build || exit
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release
-cpack -G TGZ
+cpack
 cp asteroids ../asteroids-linux
 cd ..
 
