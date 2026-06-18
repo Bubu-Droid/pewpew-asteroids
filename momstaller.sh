@@ -2,8 +2,10 @@
 
 # Mother of all installers :)
 
-# xxd -i ./textures/ship.png >./src/ship_bytes.h
-# xxd -i ./textures/back.png >./src/back_bytes.h
+# WARNING: This part is required for both Linux and Windows build.
+# Do not comment/remove these lines.
+xxd -i ./textures/ship.png >./src/ship_bytes.h
+xxd -i ./textures/back.png >./src/back_bytes.h
 
 echo "Building for Linux..."
 
