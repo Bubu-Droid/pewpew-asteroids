@@ -1,2 +1,4 @@
 build/
 windows-build/
+src/back_bytes.h
+src/ship_bytes.h
