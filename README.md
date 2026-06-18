@@ -39,14 +39,11 @@ mega project that I had planned to work on. I finally get the hang of
 writing C++ code and using CMake. I don't know much about these yet,
 but based on however much I've learned, it's super fun working on a C/C++
 project. You have explicit control over everything and decide how entities
-get created, occupy memory, and get destroyed. I finally saw a real world
-application of unique pointers.
+get created, occupy memory, and get destroyed.
 
 <sup><sub>\*Okay, okay, I know... This might not be optimized.
 Chill out bruv, I'm still learning about optimizations and
-memory allocation management. It seems that there was no use of
-the unique pointer. 😐
-</sub></sup>
+memory allocation management.</sub></sup>
 
 ---
 
