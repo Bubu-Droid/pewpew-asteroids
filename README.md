@@ -1,4 +1,4 @@
-# pewpew-asteroids
+# PewPew Asteroids
 
 This is a stripped down version of the original asteroids game,
 with my own logic added in.
