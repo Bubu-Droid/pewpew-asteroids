@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -std=c++23")
 set(source_dir "${PROJECT_SOURCE_DIR}/src")
 set(deps_dir "${PROJECT_SOURCE_DIR}/deps")
-set(textures_dir "${PROJECT_SOURCE_DIR}/textures")
+# set(textures_dir "${PROJECT_SOURCE_DIR}/textures")
 
 add_executable (asteroids
   "${source_dir}/main.cpp"
@@ -45,11 +45,11 @@ endif()
 
 
 install(TARGETS asteroids DESTINATION bin)
-install(FILES
-"${textures_dir}/ship.png"
-"${textures_dir}/back.png"
-  DESTINATION textures
-)
+# install(FILES
+# "${textures_dir}/ship.png"
+# "${textures_dir}/back.png"
+#   DESTINATION textures
+# )
 
 include(InstallRequiredSystemLibraries)
 set(CPACK_PACKAGE_NAME "asteroids")
